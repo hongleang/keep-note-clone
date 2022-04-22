@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import {
+    Add,
     ArchiveOutlined,
     CheckBoxOutlined,
     ImageOutlined,
@@ -11,27 +12,45 @@ import {
 } from '@mui/icons-material';
 
 import { Grid } from "@mui/material";
-import { ButtonBase, IconButton, Typography } from "@mui/material";
+import { ButtonBase, Checkbox, IconButton, InputBase, Typography } from "@mui/material";
+import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 import { Paper } from "@mui/material";
 
 const ContentLayout = ({ children }) => <Grid container alignItems="center" sx={{ padding: "8px 16px" }}>
     {children}
 </Grid>
 
-const InActiveContent = () => <ContentLayout>
+const InActiveContent = ({ activateAll }) => <ContentLayout>
     <Grid item xs={8}>
         <Typography variant="subtitle1" component="span" sx={{ color: 'gray' }}>
             Take Note...
         </Typography>
     </Grid>
     <Grid container xs={4} justifyContent="center">
-        <IconButton><CheckBoxOutlined /></IconButton>
+        <IconButton onClick={activateAll}><CheckBoxOutlined /></IconButton>
         <IconButton><ModeEditOutlineOutlined /></IconButton>
         <IconButton><ImageOutlined /></IconButton>
     </Grid>
 </ContentLayout>
 
-const ActiveContent = ({ setActive }) => {
+const CheckBoxInput = () => <List>
+    <ListItem disablePadding>
+        <ListItemIcon>
+            <Add />
+            <Checkbox
+                edge="start"
+                // checked
+                tabIndex={-1}
+                disableRipple
+                // inputProps={{ 'aria-labelledby': labelId }}
+            />
+        </ListItemIcon>
+        <InputBase autoFocus placeholder="List item..." />
+    </ListItem>
+
+</List>
+
+const ActiveContent = ({ deactivateAll, showCheckboxes }) => {
     const iconProps = {
         color: 'default',
         size: 'small'
@@ -41,7 +60,7 @@ const ActiveContent = ({ setActive }) => {
         <ContentLayout>
             <Grid item xs={10}>
                 <Typography variant="subtitle1" component="span" sx={{ color: 'gray' }}>
-                    Title...
+                    <InputBase placeholder="Title" />
                 </Typography>
             </Grid>
             <Grid container xs={2} justifyContent="end">
@@ -49,7 +68,7 @@ const ActiveContent = ({ setActive }) => {
             </Grid>
             <Grid item xs={8} sx={{ margin: "16px 0" }}>
                 <Typography variant="body2" component="span" sx={{ color: 'gray' }}>
-                    Note me...
+                    {!showCheckboxes ? <InputBase multiline placeholder="Take a note..." autoFocus /> : <CheckBoxInput />}
                 </Typography>
             </Grid>
 
@@ -64,7 +83,7 @@ const ActiveContent = ({ setActive }) => {
                 <Grid container justifyContent="end">
                     <ButtonBase sx={{ width: 200, height: 30 }} onClick={(e) => {
                         e.stopPropagation();
-                        setActive(false)
+                        deactivateAll()
                     }}>
                         <Typography variant="subtitle2">
                             Close
@@ -79,12 +98,23 @@ const ActiveContent = ({ setActive }) => {
 
 const Note = () => {
     const [active, setActive] = useState(false);
+    const [showCheckboxes, setShowCheckboxes] = useState(false);
+
     const noteRef = useRef();
-    console.log('active', active)
+
+    const activateAll = () => {
+        setActive(true);
+        setShowCheckboxes(true)
+    };
+    const deactivateAll = () => {
+        setActive(false);
+        setShowCheckboxes(false)
+    };
+
     useEffect(() => {
         const detectOutsideClick = (event) => {
             if (noteRef.current && !noteRef.current.contains(event.target)) {
-                setActive(!active)
+                deactivateAll()
             }
         }
 
@@ -98,7 +128,7 @@ const Note = () => {
     return (
         <>
             <Paper ref={noteRef} elevation={8} onClick={() => setActive(true)}>
-                {active ? <ActiveContent setActive={setActive} /> : <InActiveContent />}
+                {active ? <ActiveContent deactivateAll={deactivateAll} showCheckboxes={showCheckboxes} /> : <InActiveContent activateAll={activateAll} />}
             </Paper>
         </>
     );
