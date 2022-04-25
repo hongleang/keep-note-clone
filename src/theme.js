@@ -3,6 +3,13 @@ import { createTheme } from '@mui/material/styles';
 
 // A custom theme for this app
 const theme = createTheme({
+  components: {
+    MuiIcon: {
+      defaultProps: {
+        baseClassName: 'material-icons-outlined',
+      },
+    },
+  },
   palette: {
     primary: {
       main: '#556cd6',

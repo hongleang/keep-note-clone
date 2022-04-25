@@ -1,19 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import {
-    Add,
-    ArchiveOutlined,
-    CheckBoxOutlined,
-    ImageOutlined,
-    ModeEditOutlineOutlined,
-    MoreVertOutlined,
-    PaletteOutlined,
-    PushPinOutlined
-} from '@mui/icons-material';
 
 import { Grid } from "@mui/material";
-import { ButtonBase, Checkbox, IconButton, InputBase, Typography } from "@mui/material";
-import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
+import { ButtonBase, Checkbox, Icon, IconButton, InputBase, Typography } from "@mui/material";
+import { List, ListItem, ListItemIcon } from "@mui/material";
 import { Paper } from "@mui/material";
 
 const ContentLayout = ({ children }) => <Grid container alignItems="center" sx={{ padding: "8px 16px" }}>
@@ -27,34 +17,42 @@ const InActiveContent = ({ activateAll }) => <ContentLayout>
         </Typography>
     </Grid>
     <Grid container xs={4} justifyContent="center">
-        <IconButton onClick={activateAll}><CheckBoxOutlined /></IconButton>
-        <IconButton><ModeEditOutlineOutlined /></IconButton>
-        <IconButton><ImageOutlined /></IconButton>
+        <IconButton onClick={activateAll}><Icon>check_box</Icon></IconButton>
+        <IconButton><Icon>edit</Icon></IconButton>
+        <IconButton><Icon>image</Icon></IconButton>
     </Grid>
 </ContentLayout>
 
-const CheckBoxInput = () => <List>
-    <ListItem disablePadding>
-        <ListItemIcon>
-            <Add />
-            <Checkbox
-                edge="start"
-                // checked
-                tabIndex={-1}
-                disableRipple
-                // inputProps={{ 'aria-labelledby': labelId }}
-            />
-        </ListItemIcon>
-        <InputBase autoFocus placeholder="List item..." />
-    </ListItem>
+const CheckBoxInput = () => {
+    const [inputValue, setInputValue] = useState('');
 
-</List>
+    return (
+        <List>
+            <ListItem disablePadding>
+                <ListItemIcon>
+                    {inputValue.length === 0
+                        ? <Icon>add</Icon>
+                        : <Checkbox
+                            edge="start"
+                            // checked
+                            tabIndex={-1}
+                            disableRipple
+                        // inputProps={{ 'aria-labelledby': labelId }}
+                        />}
+                </ListItemIcon>
+                <InputBase autoFocus placeholder="List item..." value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
+            </ListItem>
+
+        </List>)
+}
 
 const ActiveContent = ({ deactivateAll, showCheckboxes }) => {
     const iconProps = {
         color: 'default',
         size: 'small'
     }
+
+
 
     return (
         <ContentLayout>
@@ -64,19 +62,22 @@ const ActiveContent = ({ deactivateAll, showCheckboxes }) => {
                 </Typography>
             </Grid>
             <Grid container xs={2} justifyContent="end">
-                <IconButton><PushPinOutlined /></IconButton>
+                <IconButton><Icon>bookmark</Icon></IconButton>
             </Grid>
             <Grid item xs={8} sx={{ margin: "16px 0" }}>
                 <Typography variant="body2" component="span" sx={{ color: 'gray' }}>
-                    {!showCheckboxes ? <InputBase multiline placeholder="Take a note..." autoFocus /> : <CheckBoxInput />}
+                    {!showCheckboxes
+                        ? <InputBase multiline placeholder="Take a note..." autoFocus />
+                        : <CheckBoxInput />
+                    }
                 </Typography>
             </Grid>
 
             <Grid item xs={9}>
-                <IconButton edge="start" {...iconProps}><PaletteOutlined /></IconButton>
-                <IconButton {...iconProps}><ImageOutlined /></IconButton>
-                <IconButton {...iconProps}><ArchiveOutlined /></IconButton>
-                <IconButton {...iconProps}><MoreVertOutlined /></IconButton>
+                <IconButton edge="start" {...iconProps}><Icon>palette</Icon></IconButton>
+                <IconButton {...iconProps}><Icon>image</Icon></IconButton>
+                <IconButton {...iconProps}><Icon>archive</Icon></IconButton>
+                <IconButton {...iconProps}><Icon>more_vert</Icon></IconButton>
             </Grid>
 
             <Grid item xs={3}>
