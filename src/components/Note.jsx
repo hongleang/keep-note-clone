@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { Grid } from "@mui/material";
 import { ButtonBase, Checkbox, Icon, IconButton, InputBase, Typography } from "@mui/material";
-import { List, ListItem, ListItemIcon } from "@mui/material";
+import { Divider, List, ListItem, ListItemIcon } from "@mui/material";
 import { Paper } from "@mui/material";
 
 const ContentLayout = ({ children }) => <Grid container alignItems="center" sx={{ padding: "8px 16px" }}>
@@ -25,24 +25,31 @@ const InActiveContent = ({ activateAll }) => <ContentLayout>
 
 const CheckBoxInput = () => {
     const [inputValue, setInputValue] = useState('');
+    const [hover, setHover] = useState(false);
 
     return (
-        <List>
+        <List dense>
+            <Divider />
             <ListItem disablePadding>
-                <ListItemIcon>
+                <ListItemIcon alignItems="center" sx={{ justifyContent: "center", marginRight: 0 }}>
                     {inputValue.length === 0
                         ? <Icon>add</Icon>
                         : <Checkbox
-                            edge="start"
+                            edge="end"
                             // checked
                             tabIndex={-1}
                             disableRipple
-                        // inputProps={{ 'aria-labelledby': labelId }}
                         />}
                 </ListItemIcon>
-                <InputBase autoFocus placeholder="List item..." value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
+                <InputBase
+                    autoFocus
+                    fullWidth
+                    placeholder="List item..."
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                />
             </ListItem>
-
+            <Divider />
         </List>)
 }
 
@@ -56,18 +63,18 @@ const ActiveContent = ({ deactivateAll, showCheckboxes }) => {
 
     return (
         <ContentLayout>
-            <Grid item xs={10}>
+            <Grid item xs={11}>
                 <Typography variant="subtitle1" component="span" sx={{ color: 'gray' }}>
-                    <InputBase placeholder="Title" />
+                    <InputBase fullWidth placeholder="Title" />
                 </Typography>
             </Grid>
-            <Grid container xs={2} justifyContent="end">
+            <Grid container xs={1} justifyContent="end">
                 <IconButton><Icon>bookmark</Icon></IconButton>
             </Grid>
-            <Grid item xs={8} sx={{ margin: "16px 0" }}>
+            <Grid item xs={12} sx={{ margin: "16px 0" }}>
                 <Typography variant="body2" component="span" sx={{ color: 'gray' }}>
                     {!showCheckboxes
-                        ? <InputBase multiline placeholder="Take a note..." autoFocus />
+                        ? <InputBase fullWidth multiline placeholder="Take a note..." autoFocus />
                         : <CheckBoxInput />
                     }
                 </Typography>
@@ -92,7 +99,6 @@ const ActiveContent = ({ deactivateAll, showCheckboxes }) => {
                     </ButtonBase >
                 </Grid>
             </Grid>
-
         </ContentLayout>
     )
 }
@@ -100,6 +106,8 @@ const ActiveContent = ({ deactivateAll, showCheckboxes }) => {
 const Note = () => {
     const [active, setActive] = useState(false);
     const [showCheckboxes, setShowCheckboxes] = useState(false);
+
+    // const [listItems, setListItems] = useState({});
 
     const noteRef = useRef();
 

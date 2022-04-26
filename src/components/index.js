@@ -1,3 +1,4 @@
+import CreatedNotes from './CreatedNotes';
 import Note from './Note';
 
-export { Note }
+export { CreatedNotes, Note }
