@@ -8,17 +8,19 @@ import { NotesLayout } from "./layouts";
 import { dummy_notes } from './data/notes';
 
 export default function App() {
+  const [data, setData] = React.useState(dummy_notes)
+
   return (
     <Container maxWidth="xl">
       <Container maxWidth="sm">
         <Box sx={{ my: 4 }}>
-          <Note />
+          <Note {...{ data, setData }} />
         </Box>
       </Container>
       <Container>
         <Box sx={{ mt: 4, width: '100%' }}>
           <NotesLayout >
-            {dummy_notes.map(({ body, title, id }, i) => (
+            {data.map(({ body, title, id }, i) => (
               <CreatedNotes key={`${id}_${i}`} {...{ body, title }} />
             ))}
           </NotesLayout>

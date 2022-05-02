@@ -25,7 +25,7 @@ const InActiveContent = ({ activateAll }) => <ContentLayout>
 
 const CheckBoxInput = () => {
     const [inputValue, setInputValue] = useState('');
-    const [hover, setHover] = useState(false);
+    // const [hover, setHover] = useState(false);
 
     return (
         <List dense>
@@ -53,19 +53,20 @@ const CheckBoxInput = () => {
         </List>)
 }
 
-const ActiveContent = ({ deactivateAll, showCheckboxes }) => {
+const ActiveContent = ({ save, showCheckboxes }) => {
     const iconProps = {
         color: 'default',
         size: 'small'
     }
 
-
+    const [title, setTitle] = React.useState('');
+    const [textAreaValue, setTextAreaValue] = React.useState('');
 
     return (
         <ContentLayout>
             <Grid item xs={11}>
                 <Typography variant="subtitle1" component="span" sx={{ color: 'gray' }}>
-                    <InputBase fullWidth placeholder="Title" />
+                    <InputBase fullWidth placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)}/>
                 </Typography>
             </Grid>
             <Grid container xs={1} justifyContent="end">
@@ -74,7 +75,7 @@ const ActiveContent = ({ deactivateAll, showCheckboxes }) => {
             <Grid item xs={12} sx={{ margin: "16px 0" }}>
                 <Typography variant="body2" component="span" sx={{ color: 'gray' }}>
                     {!showCheckboxes
-                        ? <InputBase fullWidth multiline placeholder="Take a note..." autoFocus />
+                        ? <InputBase fullWidth multiline placeholder="Take a note..." autoFocus value={textAreaValue} onChange={(e) => setTextAreaValue(e.target.value)}/>
                         : <CheckBoxInput />
                     }
                 </Typography>
@@ -91,7 +92,7 @@ const ActiveContent = ({ deactivateAll, showCheckboxes }) => {
                 <Grid container justifyContent="end">
                     <ButtonBase sx={{ width: 200, height: 30 }} onClick={(e) => {
                         e.stopPropagation();
-                        deactivateAll()
+                        save({ input: { title, body: textAreaValue }})
                     }}>
                         <Typography variant="subtitle2">
                             Close
@@ -103,11 +104,9 @@ const ActiveContent = ({ deactivateAll, showCheckboxes }) => {
     )
 }
 
-const Note = () => {
+const Note = ({ data, setData }) => {
     const [active, setActive] = useState(false);
     const [showCheckboxes, setShowCheckboxes] = useState(false);
-
-    // const [listItems, setListItems] = useState({});
 
     const noteRef = useRef();
 
@@ -115,15 +114,18 @@ const Note = () => {
         setActive(true);
         setShowCheckboxes(true)
     };
-    const deactivateAll = () => {
+    const save = ({ input }) => {
+        const copyData = [...data];
+
         setActive(false);
-        setShowCheckboxes(false)
+        setShowCheckboxes(false);
+        input && (input.title.length > 0 || input.body.length > 0) && setData([input, ...copyData])
     };
 
     useEffect(() => {
         const detectOutsideClick = (event) => {
             if (noteRef.current && !noteRef.current.contains(event.target)) {
-                deactivateAll()
+                save({})
             }
         }
 
@@ -137,7 +139,10 @@ const Note = () => {
     return (
         <>
             <Paper ref={noteRef} elevation={8} onClick={() => setActive(true)}>
-                {active ? <ActiveContent deactivateAll={deactivateAll} showCheckboxes={showCheckboxes} /> : <InActiveContent activateAll={activateAll} />}
+                {active ?
+                    <ActiveContent save={save} showCheckboxes={showCheckboxes} />
+                    : <InActiveContent activateAll={activateAll} />
+                }
             </Paper>
         </>
     );
