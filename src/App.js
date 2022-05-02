@@ -18,7 +18,9 @@ export default function App() {
       <Container>
         <Box sx={{ mt: 4, width: '100%' }}>
           <NotesLayout >
-            <CreatedNotes items={dummy_notes}/>
+            {dummy_notes.map(({ body, title, id }, i) => (
+              <CreatedNotes key={`${id}_${i}`} {...{ body, title }} />
+            ))}
           </NotesLayout>
         </Box>
       </Container>
